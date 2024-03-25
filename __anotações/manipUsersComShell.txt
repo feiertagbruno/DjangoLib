@@ -1,0 +1,5 @@
+# Criar usuário no Shell
+
+from django.contrib.auth.models import User
+User.objects.create_user(first_name="Maria",last_name="Helena", username="mariahelena", 
+email="maria@email.com", password="123456")

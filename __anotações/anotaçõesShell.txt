@@ -1,0 +1,44 @@
+Anotações sobre Shell do Python: (linha 24 fica interessante)
+
+comando de entrada:
+python manage.py shell
+
+comandos que eu utilizei em 24/03/2024 - Aula 56 Curso Udemy
+
+from recipes.models import Recipe, Category
+
+categories = Category.objects.all()
+categories.order_by('id') # ordem crescente
+categories.order_by('-id') # ordem descrescente
+
+#ordenar por mais de um campo
+categories.order_by('id', 'name')
+
+recipe = Recipe.objects.order_by('-id').first() #pega o primeiro
+recipe._meta.get_fields() #mostra todos os campos e seus tipos
+recipe._meta.get_fields()[0] #ver só o primeiro
+
+getattr(recipe, 'title') #consulta o valor
+recipe.title #dá o mesmo resultado, não sei nem pq usar o getattr
+
+new_category = Category()
+    # o resultado disse é um objeto da classe Category completamente vazio pra eu poder
+    # colocar os atributos depois exemplo:
+new_category.name = 'nova categoria'
+    # dei o valor ao único atributo dessa categoria, mas ainda não está salvo, obviamente
+    # porque ainda é uma variavel
+new_category.save()
+    # por padrão o atributo 'commit' da função save() é True, mas eu posso colocar como False
+
+# uma maneira mais breve de fazer o que foi feito aí em cima é o método create:
+new_category = Category.objects.create()
+    #porém se passar assim ele cria um registro vazio (só com id e o resto vazio)
+new_category = Category.objects.create(name='nova nova categoria')
+    #foi salvo numa variável mas poderia ter sido feito direto, sem guardar em variável
+
+# método save numa variavel que já existe (já possui um id)
+    # o resultado disso é que o objeto vai ser alterado na tabela, e não criado um novo. Exemplo:
+# utilizando aqui a mesma variavel criada no ultimo comando em cima, categoria 'nova nova categoria'
+# que já está salva na variavel new_category
+new_category.name = 'nova alterada categoria'
+new_category.save() # a categoria será alterada, pois o objeto salvo na var já havia sido salvo

@@ -1,0 +1,14 @@
+comandos:
+django-admin startproject nome_do_projeto .
+python manage.py startapp nome_do_app
+python manage.py createsuperuser
+
+placehold.co é um site para colocar aquelas imagens 1280 x 800 (exemplo)
+
+
+
+comando para unir todas as pastas static em uma só (cuidar com colisão de nomes):
+python manage.py colectstatic
+
+
+ngrok
