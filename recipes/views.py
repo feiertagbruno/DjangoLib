@@ -56,6 +56,10 @@ def category(request, category_id):
 def recipe(request, id):
     if len(Recipe.objects.filter(id=id))>0:
         recipe = Recipe.objects.get(id=id)
+        if recipe.is_published != True:
+            recipe = Recipe()
+            recipe.id = id
+            recipe.title = "Recipe Not Published"
     else:
         recipe = Recipe()
         recipe.id = id

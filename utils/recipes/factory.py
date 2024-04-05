@@ -32,13 +32,15 @@ def make_recipe():
 def gen_random_int():
     return randint(1,999999)
 
-def make_test_recipe():
+def make_test_recipe(is_published = None):
     title = fake.sentence(nb_words=6)
     title_splited = title.split()
     title_slug = ""
     for i in range(len(title_splited)):
         title_slug += title_splited[i]
     title_slug = title_slug[:len(title_slug)-1]
+    if is_published == None:
+        is_published = choice([True, False])
     return {
         "title":title,
         "description": fake.sentence(nb_words=12),
@@ -48,7 +50,7 @@ def make_test_recipe():
         "servings": fake.random_number(digits=2, fix_len=True),
         "servings_unit": "Porção",
         "preparation_steps": fake.text(3000),
-        "is_published": choice([True, False]),
+        "is_published": is_published,
         "preparation_steps_is_html": choice([True, False]),
     }
 
@@ -61,11 +63,15 @@ def make_test_author():
         "password":"123456"
     }
 
-def make_test_category():
+def make_test_category( name = None ):
+    if name is None:
+        name = fake.sentence(nb_words=2)[:65]
     return {
-        "name":fake.sentence(nb_words=2)
+        "name":name
     }
 
+def make_test_long_sentence():
+    return fake.sentence(nb_words=300)
 
 if __name__ == '__main__':
     from pprint import pprint

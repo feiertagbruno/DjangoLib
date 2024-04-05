@@ -2,9 +2,8 @@ from django.urls import reverse, resolve
 from recipes import views
 from django.contrib.auth.models import User
 from recipes.models import Recipe, Category
-from utils.recipes.factory import make_test_recipe, make_test_author, make_test_category
+from utils.recipes.factory import make_test_recipe, make_test_author, make_test_category, make_test_long_sentence
 from .test_recipe_base import RecipeTestBase
-
 
 #from unittest import skip
 #@skip("escapando temporariamente destes testes")
@@ -65,8 +64,40 @@ class RecipeViewsTest(RecipeTestBase):
         self.assertIn("Test Category", content)
         self.assertEqual(len(response_context_recipes), 1)
 
-    
+    def test_recipe_category_template_loads_category(self):
+        category_obj = self.create_test_category(name="testing categories")
+        author_obj = self.create_test_user()
+        for _ in range(5):
+            self.create_test_recipe(
+                category_obj,
+                author_obj,
+                )
+        response = self.client.get(reverse("recipes:category", kwargs={"category_id":category_obj.id}))
+        content = response.content.decode("utf-8")
+        response_context_recipes = response.context["recipes"]
+        self.assertEqual(len(response_context_recipes), 5)
+        self.assertIn("Testing Categories", content)
+        self.assertRegex(content, "[tT][ae]sting [cC][a]tegories")
+
+    def test_recipe_details_template_loads_details(self):
+        description_long_sentence = make_test_long_sentence()
+        recipe = self.create_test_recipe( description = description_long_sentence )
+        response = self.client.get(reverse("recipes:recipe", kwargs={"id":recipe.id}))
+        content = response.content.decode("utf-8")
+        response_context_recipes = response.context["recipe"]
+        self.assertIn(description_long_sentence, content)
+
+    def test_recipe_home_template_dont_load_recipes_not_published(self):
+        
+        self.create_test_recipe(is_published=False)
+        
+        response = self.client.get(reverse("recipes:home"))
+        content = response.content.decode("utf-8")
+
+        self.assertIn("No Recipe Found", content)
+
     # MEU TESTE
+    # CRIANDO VÁRIAS RECIPES COM O FAKER E VENDO SE ESTÃO CORRETAS NA TELA HOME
     def test_recipes_creating_a_lot_of_recipes_in_random(self):
         trials = 3
         for _ in range(trials):
@@ -74,25 +105,12 @@ class RecipeViewsTest(RecipeTestBase):
             dict_user = make_test_author()
             dict_category = make_test_category()
             Recipe.objects.create(
-                title = dict_recipe["title"],
-                description = dict_recipe["description"],
-                slug = dict_recipe["slug"],
-                preparation_time = dict_recipe["preparation_time"],
-                preparation_time_unit = dict_recipe["preparation_time_unit"],
-                servings = dict_recipe["servings"],
-                servings_unit = dict_recipe["servings_unit"],
-                preparation_steps = dict_recipe["preparation_steps"],
-                preparation_steps_is_html = dict_recipe["preparation_steps_is_html"],
-                is_published = dict_recipe["is_published"],
+                **dict_recipe,
                 author = User.objects.create_user(
-                    username = dict_user["username"],
-                    first_name = dict_user["first_name"],
-                    last_name = dict_user["last_name"],
-                    email = dict_user["email"],
-                    password=dict_user["password"]
+                    **dict_user
                 ),
                 category = Category.objects.create(
-                    name = dict_category["name"]
+                    **dict_category
                 )
             )
         response = self.client.get(reverse("recipes:home"))
@@ -113,3 +131,49 @@ class RecipeViewsTest(RecipeTestBase):
             len(recipes_False)
         )
     # MEU TESTE
+        
+    #MEU TESTE
+    # CRIANDO VÁRIAS RECIPES E TESTANDO NA TELA CATEGORY
+    def test_recipes_category_bringing_only_published_recipes_on_random(self):
+
+        category = Category.objects.create(**make_test_category("Test Category"))
+        trials = 1
+        published_recipes_count = 0
+
+        for _ in range(trials):
+            dict_recipe = make_test_recipe()
+            dict_author = make_test_author()
+            recipe = Recipe.objects.create(
+                **dict_recipe,
+                author = User.objects.create_user(**dict_author),
+                category = category,
+            )
+            if recipe.is_published == True:
+                published_recipes_count += 1
+
+        published_recipes_filter = len(Recipe.objects.filter(is_published=True))
+        response = self.client.get(reverse("recipes:category", kwargs={"category_id": category.id}))
+        response_context_recipes = response.context["recipes"]
+        content = response.content.decode("utf-8")
+
+
+        self.assertIn("Test Category", content)
+        self.assertEqual(len(response_context_recipes), published_recipes_count)
+        self.assertEqual(published_recipes_count,published_recipes_filter)
+        if published_recipes_count == 0:
+            self.assertIn("No Category Found", content)
+        # MEU TESTE
+            
+    def test_recipes_detail_do_not_loading_not_published_recipes(self):
+        category = Category.objects.create(**make_test_category())
+        author = User.objects.create_user(make_test_author())
+        recipe = Recipe.objects.create(
+            **make_test_recipe(is_published=False),
+            category = category,
+            author = author,
+        )
+
+        response = self.client.get(reverse("recipes:recipe", kwargs={"id":recipe.id}))
+        content = response.content.decode("utf-8")
+
+        self.assertIn("Recipe Not Published", content)
