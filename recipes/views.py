@@ -3,7 +3,7 @@ from django.http import HttpResponse, Http404
 from utils.recipes.factory import make_recipe, gen_random_int
 from .models import Recipe, Category
 import pdb
-from django.http import HttpResponse
+from django.db.models import Q
 
 # Create your views here.
 def home(request):
@@ -67,4 +67,25 @@ def recipe(request, id):
     return render(request,'recipes/pages/recipe-view.html', context={
         'recipe':recipe,
         'is_detail_page': True,
+    })
+
+def search(request):
+    search_term = request.GET.get("q", "").strip()
+
+    if not search_term:
+        raise Http404()
+    
+    recipes = Recipe.objects.filter(
+        Q(
+        Q(title__icontains=search_term) | 
+        Q(description__icontains = search_term),
+        ),
+        is_published = True,
+    ).order_by("-id")
+        # i antes de contains serve como ignorecase
+
+    return render(request, "recipes/pages/search.html", {
+        "page_title": f"Search for '{search_term}'",
+        "search_term": search_term,
+        "recipes":recipes,
     })

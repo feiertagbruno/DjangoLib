@@ -46,6 +46,10 @@ class RecipeTestBase(TestCase):
             preparation_steps_is_html = False,
             is_published = True,
     ):
+        i = 1
+        while len(Recipe.objects.filter(slug=slug)) != 0:
+            i += 1
+            slug = slug + str(i)
         if category_data is None:
             category_data = self.create_test_category()
         if author_data is None:

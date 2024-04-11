@@ -20,6 +20,10 @@ class RecipeModelTest(RecipeTestBase):
             servings_unit = "Porções",
             preparation_steps = "Recipe Preparation Steps",
         )
+        i = 1
+        while len(Recipe.objects.filter(slug=recipe.slug)) != 0:
+            i += 1
+            recipe.slug = recipe.slug + str(i)
         recipe.full_clean()
         recipe.save()
         return recipe
