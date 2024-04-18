@@ -1,0 +1,24 @@
+comando para instalação
+py -m pip install python-dotenv
+
+3 opções de lugar para colocar variavies de ambiente
+
+1. manage.py
+2. asgi.py
+3. wsgi.py
+
+    from dotenv import load_dotenv
+    load_dotenv()
+
+coloca essas duas frases nos 3 arquivos.
+cria um arquivo ".env" na página base do projeto, e também um ".env-example" que é para
+comunicação entre os desenvolvedores. Para exemplificar o que tem dentro do .env
+porque ele não vai pra produção
+
+dentro desse arquivo .env, coloca as variaveis de ambiente, exemplo PER_PAGE=9, qualquer 
+variavel fixa que vai ficar como Global no projeto.
+
+para eu pegar essa variavel global dentro da view, vou fazer o seguinte:
+
+import os
+PER_PAGE = os.environ.get('PER_PAGE')

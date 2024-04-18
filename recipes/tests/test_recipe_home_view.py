@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from recipes.models import Recipe, Category
 from utils.recipes.factory import make_test_recipe, make_test_author, make_test_category, make_test_long_sentence
 from .test_recipe_base import RecipeTestBase
+from unittest.mock import patch
 
 #from unittest import skip
 #@skip("escapando temporariamente destes testes")
@@ -84,3 +85,19 @@ class RecipeHomeViewTest(RecipeTestBase):
             len(recipes_False)
         )
     # MEU TESTE
+
+    #@patch("recipes.views.PER_PAGE", new=3)
+    def test_recipe_home_is_paginated(self):
+        author = self.create_test_user()
+        
+        for i in range(9):
+            kwargs = {"author_data":author, "slug": f"r{i}"}
+            self.create_test_recipe(**kwargs)
+        
+        with patch("recipes.views.PER_PAGE", new=3):
+            response = self.client.get(reverse("recipes:home"))
+            recipes = response.context["recipes"]
+            paginator = recipes.paginator
+
+            self.assertEqual(paginator.num_pages, 3)
+            self.assertEqual(len(paginator.get_page(1)),3)
