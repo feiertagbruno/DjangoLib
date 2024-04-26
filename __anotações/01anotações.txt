@@ -1,7 +1,16 @@
 comandos:
-django-admin startproject nome_do_projeto .
-python manage.py startapp nome_do_app
-python manage.py createsuperuser
+    django-admin startproject nome_do_projeto .
+    python manage.py startapp nome_do_app
+    python manage.py createsuperuser
+
+mudar a senha do superuser (acredito que de qualquer usuário):
+    py manage.py changepassword feiertagbruno
+
+ver o model User no shell:
+    py manage.py shell
+    from django.contrib.auth.models import User
+    ....
+
 
 placehold.co é um site para colocar aquelas imagens 1280 x 800 (exemplo)
 
