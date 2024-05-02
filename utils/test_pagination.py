@@ -64,8 +64,6 @@ class PaginationTest(TestCase):
         )["pagination"]   
         self.assertEqual([17,18,19,20], pagination)
 
-    
-
     # def make_pagination_range( self, page_range, qty_pages, current_page ):
     #     range_len = len(page_range)
     #     page_breaker = int(round qty_pages/2+1.1,0))

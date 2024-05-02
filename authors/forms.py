@@ -29,7 +29,42 @@ class RegisterForm(forms.ModelForm):
         add_placeholder(self.fields["username"],"Your username...")
         add_placeholder(self.fields["email"],"Your existing e-mail...")
         add_placeholder(self.fields["last_name"],"All that comes after the first name kkk")
+        add_placeholder(self.fields["first_name"],"Your first name...")
         add_attr(self.fields["username"],"css", "a-css-class")
+
+    first_name = forms.CharField(
+        error_messages={"required":"Write your first name"},
+        required=True,
+        label="First name",
+    )
+
+    last_name = forms.CharField(
+        error_messages={"required":"Write your last name"},
+        required=True,
+        label="Last name",
+    )
+
+    username = forms.CharField(
+        label="Username",
+        required=True,
+        error_messages={
+            "required":"This field must not be empty",
+            "min_length":"Username must have at least 4 characters",
+            "max_length":"Username must not have more than 150 characters",
+            },
+        help_text=(
+            "Username may have letters, numbers or one of those chars @.*-_ ."
+            "The length should be between 4 and 150 characters."
+        ),
+        min_length=4, max_length=150,
+    )
+
+    email = forms.CharField(
+        error_messages={"required":"Your e-mail is needed"},
+        required=True,
+        label="E-mail",
+        help_text="The e-mail must be valid.",
+    )
 
     password = forms.CharField(
         required=True,
@@ -39,11 +74,15 @@ class RegisterForm(forms.ModelForm):
             }
         ),
         error_messages={
-            "required":"Password must not be empty."
+            "required":"Password must not be empty"
         },
         validators=[
             strong_password,
         ],
+        help_text=(
+            "Needed at least: 1 uppercase, 1 lowercase and 1 number"
+        ),
+        label="Password"
     )
 
     password2 = forms.CharField(
@@ -52,7 +91,9 @@ class RegisterForm(forms.ModelForm):
             "placeholder":"Repeat the same password."
         }),
         label="Password confirmation",
+        error_messages={"required":"This field must not be empty"}
     )
+
     class Meta:
         model = User
         fields = [
@@ -62,31 +103,20 @@ class RegisterForm(forms.ModelForm):
             "email",
             "password",
         ]
-        # exclude = ["first_name"]
-        labels = {
-            "username":"Username",
-            "first_name":"First name",
-            "last_name":"Last name",
-            "email":"E-mail",
-            "password":"Password",
-        }
-        help_texts = {
-            "email":"The e-mail must be valid."
-        }
-        error_messages = {
-            "username":{
-                "required":"This field must not be empty.",
-            }
-        }
-        widgets = {
-            "first_name": forms.TextInput(attrs={
-                "placeholder":"Your first name...",
-                "class": "",
-            }),
-            "password": forms.PasswordInput(attrs={
-                "placeholder":"Make sure you won't forget it..."
-            })
-        }
+    #     # exclude = ["first_name"]
+    #     labels = {
+    #         "username":"Username",
+    #     }
+    #     error_messages = {
+    #         "username":{
+    #             "required":"This field must not be empty",
+    #         }
+    #     }
+        # widgets = {
+        #     "first_name": forms.TextInput(attrs={
+        #         "placeholder":"Your first name...",
+        #     }),
+        # }
     
     # VALIDAÇÃO DE CAMPO
     def clean_password(self):
@@ -101,6 +131,16 @@ class RegisterForm(forms.ModelForm):
 
         return data
     
+    def clean_email(self):
+        email = self.cleaned_data.get("email","")
+        exists = User.objects.filter(email = email).exists()
+
+        if exists:
+            raise ValidationError(
+                "User e-mail is already in use", code="invalid",
+            )
+        return email
+    
     # VALIDAÇÃO DO FORM COMO UM TODO
     def clean(self):
         cleaned_data = super().clean()
@@ -108,7 +148,7 @@ class RegisterForm(forms.ModelForm):
         password = cleaned_data.get("password")
         password2 = cleaned_data.get("password2")
 
-        if password != password2:
+        if password != password2 and password != None and password2 != None:
             # ESTE CÓDIGO FUNCIONA, VOU ESCREVER OUTRO PRA REGISTRAR O QUE O PROFESSOR PASSOU
             # raise ValidationError({
             #     "password":"Password and Password2 must be equal",

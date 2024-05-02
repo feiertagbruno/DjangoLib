@@ -1,0 +1,3 @@
+Comandos do Coverage
+coverage run -m pytest
+coverage html
