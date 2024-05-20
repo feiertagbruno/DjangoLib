@@ -1,0 +1,9 @@
+primeiro instalei o :
+py -m pip install selenium
+
+depois baixei o chromedriver na internet
+    1. Abri o Chrome real fui em ajuda e em Sobre, pra saber qual é a versão que estou usando do Chrome
+    2. Baixei o ChromeDriver especifico da versão que estou usando e do meu Sist. operacional
+
+depois de tudo instalado, criamos o aquivo browser.py na pasta utils
+

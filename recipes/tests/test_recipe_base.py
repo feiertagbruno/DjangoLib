@@ -3,15 +3,7 @@ from recipes.models import Recipe, Category
 from django.contrib.auth.models import User
 
 
-class RecipeTestBase(TestCase):
-
-    # É ATIVADO NO INÍCIO DE CADA TESTE
-#    def setUp(self) -> None:
-#        category = self.create_test_category()
-#        author = self.create_test_user()
-#        self.create_test_recipe(category, author)
-#        return super().setUp()
-    
+class RecipeMixin:
     def create_test_category(self, name="Category"):
         return Category.objects.create(name=name)
     
@@ -68,6 +60,30 @@ class RecipeTestBase(TestCase):
             preparation_steps_is_html = preparation_steps_is_html,
             is_published = is_published,
         )
+    
+    def make_recipe_in_batch(self, qtd=10, author = None):
+        recipes = []
+        if author == None:
+            author = self.create_test_user()
+        for i in range(qtd):
+            kwargs = {
+                "title": f"Recipe Title {i}",
+                "slug": f"r{i}", 
+                "author_data": author
+            }
+            recipe = self.create_test_recipe(**kwargs)
+            recipes.append(recipe)
+        return recipes
+
+class RecipeTestBase(TestCase, RecipeMixin):
+
+    # É ATIVADO NO INÍCIO DE CADA TESTE
+#    def setUp(self) -> None:
+#        category = self.create_test_category()
+#        author = self.create_test_user()
+#        self.create_test_recipe(category, author)
+#        return super().setUp()
+    
 
     # É ATIVADO NO FIM DE CADA TESTE
     def tearDown(self) -> None:
