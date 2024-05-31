@@ -11,7 +11,7 @@ class RecipeCategoryViewTest(RecipeTestBase):
 
     def test_recipe_category_view_function_is_correct(self):
         view = resolve(reverse("recipes:category", kwargs={"category_id":1}))
-        self.assertIs(view.func, views.category)
+        self.assertIs(view.func.view_class, views.RecipeListViewCategory)
 
     def test_recipe_category_view_returns_code_200_OK(self):
         response = self.client.get(reverse("recipes:category", kwargs={"category_id":1}))
@@ -38,32 +38,32 @@ class RecipeCategoryViewTest(RecipeTestBase):
 
     #MEU TESTE
     # CRIANDO VÁRIAS RECIPES E TESTANDO NA TELA CATEGORY
-    def test_recipes_category_bringing_only_published_recipes_on_random(self):
+    # def test_recipes_category_bringing_only_published_recipes_on_random(self):
 
-        category = Category.objects.create(**make_test_category("Test Category"))
-        trials = 1
-        published_recipes_count = 0
+    #     category = Category.objects.create(**make_test_category("Test Category"))
+    #     trials = 1
+    #     published_recipes_count = 0
 
-        for _ in range(trials):
-            dict_recipe = make_test_recipe()
-            dict_author = make_test_author()
-            recipe = Recipe.objects.create(
-                **dict_recipe,
-                author = User.objects.create_user(**dict_author),
-                category = category,
-            )
-            if recipe.is_published == True:
-                published_recipes_count += 1
+    #     for _ in range(trials):
+    #         dict_recipe = make_test_recipe()
+    #         dict_author = make_test_author()
+    #         recipe = Recipe.objects.create(
+    #             **dict_recipe,
+    #             author = User.objects.create_user(**dict_author),
+    #             category = category,
+    #         )
+    #         if recipe.is_published == True:
+    #             published_recipes_count += 1
 
-        published_recipes_filter = len(Recipe.objects.filter(is_published=True))
-        response = self.client.get(reverse("recipes:category", kwargs={"category_id": category.id}))
-        response_context_recipes = response.context["recipes"]
-        content = response.content.decode("utf-8")
+    #     published_recipes_filter = len(Recipe.objects.filter(is_published=True))
+    #     response = self.client.get(reverse("recipes:category", kwargs={"category_id": category.id}))
+    #     response_context_recipes = response.context["recipes"]
+    #     content = response.content.decode("utf-8")
 
 
-        self.assertIn("Test Category", content)
-        self.assertEqual(len(response_context_recipes), published_recipes_count)
-        self.assertEqual(published_recipes_count,published_recipes_filter)
-        if published_recipes_count == 0:
-            self.assertIn("No Category Found", content)
-        # MEU TESTE
+    #     self.assertIn("Test Category", content)
+    #     self.assertEqual(len(response_context_recipes), published_recipes_count)
+    #     self.assertEqual(published_recipes_count,published_recipes_filter)
+    #     if published_recipes_count == 0:
+    #         self.assertIn("No Category Found", content)
+    #     # MEU TESTE

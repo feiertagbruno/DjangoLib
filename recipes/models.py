@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-import pdb
+from django.urls import reverse
+from django.utils.text import slugify
 
 # Create your models here.
 
@@ -34,17 +35,18 @@ class Recipe(models.Model):
         #pdb.set_trace()
         return str(self.id) + " - " + str(self.title)
 
+    def get_absolute_url(self):
+        return reverse("recipes:recipe", kwargs={"id":self.id})
 
-
-
-
-# title description slug
-# preparation_time preparation_time_unit
-# servings servings_unit
-# preparation_step
-# preparation_step_is_html
-# created_at updated_at
-# is_published
-# cover
-# category (relação)
-# Author (relação)
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            slug = slugify(self.title)
+        else:
+            slug = self.slug
+        i = 0
+        nova_slug = slug
+        while Recipe.objects.filter(slug=nova_slug).exists():
+            nova_slug = f"{slug}{i}"
+            i += 1
+        self.slug = nova_slug
+        super().save(*args, **kwargs)

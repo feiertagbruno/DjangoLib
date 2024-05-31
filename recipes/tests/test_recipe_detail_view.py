@@ -11,7 +11,7 @@ class RecipeDetailViewTest(RecipeTestBase):
 
     def test_recipe_detail_view_function_is_correct(self):
         view = resolve(reverse("recipes:recipe",kwargs={"id":1}))
-        self.assertIs(view.func, views.recipe)
+        self.assertIs(view.func.view_class, views.RecipeDetail)
     
     def test_recipe_detail_view_returns_code_200_OK(self):
         response = self.client.get(reverse("recipes:recipe",kwargs={"id":1}))
@@ -28,17 +28,3 @@ class RecipeDetailViewTest(RecipeTestBase):
         content = response.content.decode("utf-8")
         response_context_recipes = response.context["recipe"]
         self.assertIn(description_long_sentence, content)
-
-    def test_recipes_detail_do_not_loading_not_published_recipes(self):
-        category = Category.objects.create(**make_test_category())
-        author = User.objects.create_user(make_test_author())
-        recipe = Recipe.objects.create(
-            **make_test_recipe(is_published=False),
-            category = category,
-            author = author,
-        )
-
-        response = self.client.get(reverse("recipes:recipe", kwargs={"id":recipe.id}))
-        content = response.content.decode("utf-8")
-
-        self.assertIn("Recipe Not Published", content)

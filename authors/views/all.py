@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
-from .forms import RegisterForm, LoginForm
+from authors.forms import RegisterForm, LoginForm
 from django.http import Http404
 from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from recipes.models import Recipe
 
 # Create your views here.
 def register_view(request):
@@ -53,6 +54,7 @@ def login_create(request):
         if authenticated_user is not None:
             messages.success(request, "You are logged in")
             login(request, authenticated_user)
+            return redirect(reverse("authors:dashboard"))
         else:
             messages.error(request,"Invalid credentials")
         return redirect(login_url)
@@ -66,6 +68,17 @@ def login_create(request):
 def logout_view(request):
     if request.method == "POST":
         if request.POST.get("username") == request.user.username:
-            messages.success(request, "Logged out successfully")
+            messages.info(request, "Logged out successfully")
             logout(request)
     return redirect(reverse("authors:login"))
+
+@login_required(login_url="authors:login", redirect_field_name="next")
+def dashboard(request):
+    recipes = Recipe.objects.filter(
+        is_published = False,
+        author = request.user
+    )
+    context = {
+        "recipes": recipes
+    }
+    return render(request, "authors/pages/dashboard.html", context)
