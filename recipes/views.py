@@ -11,6 +11,7 @@ from utils.pagination import make_pagination
 from django.views.generic import ListView, DetailView
 
 
+
 PER_PAGE = int(os.environ.get("PER_PAGE", 6))
 
 class RecipeListViewBase(ListView):

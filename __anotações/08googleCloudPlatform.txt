@@ -1,0 +1,7 @@
+1. Criar conta, cadastrar um cartão de crédito
+2. Clicar nos três risquinho, Compute Engine, Instâncias de VM
+3. Criar Instância
+4. Escolhemos a Categoria E2 Micro (mais barata)
+5. Permitir HTTP e Permitir HTTPS
+6. Clicar em Criar
+7. Endereços IP - Transformar o IP em Estático

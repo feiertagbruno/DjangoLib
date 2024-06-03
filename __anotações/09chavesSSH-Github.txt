@@ -1,0 +1,46 @@
+1. criar uma conta no github
+2. cliquei em New para criar um novo repositório, dei um nome a ele e cliquei em salvar
+3. por algum motivo o professor escolheu ssh do que https
+4. entrar pelo powershell na pasta venv/scripts/activate
+5. comandos no pwsh:
+    git config --global user.name "Bruno Feiertag Martini"
+    git config --global email "feiertagbruno@gmail.com"
+    git config --global init.defaultBranch main
+    git init
+6. uma pasta ".git" será criada na pasta principal do projeto
+7. novo comando:
+    ssh-keygen
+    enter (criar diretório)
+    enter (senha)
+8. Uma pasta ".ssh" foi criada em "C:\Users\bruno.martini\.ssh", se não aparecer, ela deve ser oculta.
+9. dentro da pasta .ssh tem um arquivo chamado "id_rsa" e um "id_rsa.pub"
+    - a frase do professor foi "este é o arquivo privado do seu computador"
+    - provavelmente ele dá ao github acesso à minha maquina
+
+10. abrir o arquivo id_rsa.pub e copiar a chave que tem lá.
+11. no github, clica na bolinha do usuário em cima(direita) e vai e settings
+    (ele abriu em nova aba pra não perder a url que o github tinha gerado antes)
+12. em SSH Keys ele clicou em New SSH Key
+13. colou a chave do id_rsa.pub dentro e salvou
+14. copiou o link SSH que o github gerou ao criar o novo projeto.
+15. no pwsh, dentro da pasta venv, executou o comando:
+    git remote add origin (chave ssh do github)
+    ps. o comando é sem parenteses => git remote add origin cchhaavvee
+
+16. para visualisar os links para fetch (baixar info) e push (enviar invo):
+    git remote -v
+
+17. na primeira vez que tentou commitar o vs code pediu para ele executar o seguinte comando:
+    git push --set-upstream origin main
+    yes (para dizer que confia)
+
+Finalizou
+
+
+    comandos para fazer commit:
+        git add .
+        git commit -m "titulo do commit"
+        git push
+    
+    outros comandos:
+        git status (para ver quais pastas faltam fazer git push)
