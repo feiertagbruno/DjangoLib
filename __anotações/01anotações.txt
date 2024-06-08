@@ -1,3 +1,5 @@
+python -m venv venv
+
 comandos:
     django-admin startproject nome_do_projeto .
     python manage.py startapp nome_do_app

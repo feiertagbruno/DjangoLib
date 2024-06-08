@@ -5,3 +5,12 @@
 5. Permitir HTTP e Permitir HTTPS
 6. Clicar em Criar
 7. Endereços IP - Transformar o IP em Estático
+8. Colar o conteudo de "~/.ssh/id_rsa.pub" no servidor no Google Cloud
+    comando para ver a chave:
+    cat "~/.ssh/id_rsa.pub"
+9. para logar no servidor no Google Cloud pelo powershell foi o comando:
+    ssh Feier@34.41.66.156 "~/.ssh/id_rsa"
+                           caminho do arquivo gerado pelo ssh
+              ip externo da do servidor na google cloud
+        usuario do pc que eu tinha criado a chave (comando ssh-keygen [ver anotação 09])
+10. VER O ARQUIVO readme.md da pasta Deploy
