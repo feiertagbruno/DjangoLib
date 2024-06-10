@@ -101,7 +101,6 @@ git config --global init.defaultBranch main
 Um repositório bare é um repositório transitório (como se fosse um github).
 
 ```
-mkdir -p ~/app_bare
 cd ~/app_bare
 git init --bare
 cd ~
@@ -117,6 +116,8 @@ git remote add origin ~/app_bare
 git add . && git commit -m 'Initial'
 cd ~
 ```
+
+git remote -v (para pesquisar)
 
 No seu computador local, adicione o bare como remoto:
 
