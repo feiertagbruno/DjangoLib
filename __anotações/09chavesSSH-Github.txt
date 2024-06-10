@@ -4,7 +4,7 @@
 4. entrar pelo powershell na pasta venv/scripts/activate
 5. comandos no pwsh:
     git config --global user.name "Bruno Feiertag Martini"
-    git config --global email "feiertagbruno@gmail.com"
+    git config --global user.email "feiertagbruno@gmail.com"
     git config --global init.defaultBranch main
     git init
 6. uma pasta ".git" será criada na pasta principal do projeto
