@@ -142,7 +142,6 @@ python3.9 -m venv venv
 . venv/bin/activate
 pip install -r requirements.txt
 pip install psycopg2
-pip install gunicorn
 ```
 
 ## Configurando o nginx
